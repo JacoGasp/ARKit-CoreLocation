@@ -189,44 +189,33 @@ open class LocationNode: SCNNode {
     func renderingOrder(fromDistance distance: CLLocationDistance) -> Int {
         return Int.max - 1000 - (Int(distance * 1000))
     }
-    
-    @available(iOS 11.0, *)
-    func stackNode(locationNodes: [LocationNode], stackingOffset: Float) {
         
-        // Detecting collision
-        guard let node1 = self.childNodes.first else { return }
-        var hasCollision = false
-        var i = 0
-        while i < locationNodes.count {
-            let locationNode2 = locationNodes[i]
+    @available(iOS 11.0, *)
+    /// For the the given node, check if it is occluded by other nodes already present in the scene.
+    /// A node is occluded when the angle on the XZ plane between the node and another one is less then angle on the XZ plane
+    /// subtenend by the node itself, and their vertical heights on the Y axis intersects.
+    /// If the occlusion occurs, move the node one level up and check it anothoer node occluded it.
+    func stackNode(locationNodes: [LocationNode], stackingOffset: Float) {
+        guard let node1 = self.childNodes.first else { return } // The current node to move
+        
+        for locationNode in locationNodes {
+            guard let node2 = locationNode.childNodes.first else { return }
             
-            if (locationNode2 == self) {
-                // If collision, start over because movement could cause additional collisions
-                if hasCollision {
-                    hasCollision = false
-                    i = 0
-                    continue
-                }
-                break
-            }
+            let angleBetweenNodes = node1.simdWorldPosition.angleXZbetween(node2.simdWorldPosition)
             
-            guard let node2 = locationNode2.childNodes.first else { return }
+            // The "angular length" subtended by node1.
+            let angleSubtendedByNode = 2 * atan(node1.simdScale.x / simd_length(node1.simdWorldPosition))
             
-            // If the angle between two nodes and the user is less than a threshold and the vertical distance
-            // between the node centers is less than deltaY trheshold a collision occured and move the node up
-            let angle = node1.simdWorldPosition.angleXZbetween(node2.simdWorldPosition)
-            
-            let angleMin = 2.5 * atan(node1.scale.x / 100) // You can change 2.5 to your requirements
+            // Expand a little bit the angle to give space. Value in radians (0.1 rad ≈ 5°, thus 2.5° left and 2.5° right)
+            let angleMin = angleSubtendedByNode + 0.1
             
             let deltaY = abs(node1.worldPosition.y - node2.worldPosition.y)
             let deltaYMin = 2 * node1.boundingBox.max.y * node1.scale.y
-            
-            // We have a collision, move the node up by one node height + stackingOffset
-            if deltaY < deltaYMin && angle < angleMin {
+             
+            // The node is occluded, move it up by one node height + stackingOffset
+            if deltaY < deltaYMin && angleBetweenNodes < angleMin {
                 node1.simdPosition.y += deltaYMin + stackingOffset
-                hasCollision = true
             }
-            i += 1
         }
     }
 }
