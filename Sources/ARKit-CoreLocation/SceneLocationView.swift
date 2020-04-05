@@ -276,7 +276,7 @@ public extension SceneLocationView {
         }
         
         if locationNode.shouldStackAnnotation {
-            locationNode.stackNode(scenePosition: scenePosition, locationNodes: locationNodes, stackingOffset: stackingOffset)
+            locationNode.stackNode(locationNodes: locationNodes, stackingOffset: stackingOffset)
         }
         
         locationNodes.append(locationNode)

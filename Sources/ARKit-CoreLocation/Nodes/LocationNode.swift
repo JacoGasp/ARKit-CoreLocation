@@ -86,7 +86,7 @@ open class LocationNode: SCNNode {
     public var scalingScheme: ScalingScheme = .normal
     
     /// Whether the node should be stacked along the y-axis accordingly with the distance
-    /// When set to true, scaleRealtiveToDistance should be false
+    /// When set to true, scaleRelativeToDistance should be false
     public var shouldStackAnnotation = false
     
 
@@ -191,7 +191,7 @@ open class LocationNode: SCNNode {
     }
     
     @available(iOS 11.0, *)
-    func stackNode(scenePosition: SCNVector3?, locationNodes: [LocationNode], stackingOffset: Float) {
+    func stackNode(locationNodes: [LocationNode], stackingOffset: Float) {
         
         // Detecting collision
         guard let node1 = self.childNodes.first else { return }
@@ -221,7 +221,7 @@ open class LocationNode: SCNNode {
             let deltaY = abs(node1.worldPosition.y - node2.worldPosition.y)
             let deltaYMin = 2 * node1.boundingBox.max.y * node1.scale.y
             
-            // We have a collision, move the node 1 up
+            // We have a collision, move the node up by one node height + stackingOffset
             if deltaY < deltaYMin && angle < angleMin {
                 node1.simdPosition.y += deltaYMin + stackingOffset
                 hasCollision = true
