@@ -194,7 +194,7 @@ open class LocationNode: SCNNode {
     func stackNode(scenePosition: SCNVector3?, locationNodes: [LocationNode], stackingOffset: Float) {
         
         // Detecting collision
-        let node1 = self.childNodes.first!
+        guard let node1 = self.childNodes.first else { return }
         var hasCollision = false
         var i = 0
         while i < locationNodes.count {
@@ -210,7 +210,7 @@ open class LocationNode: SCNNode {
                 break
             }
             
-            let node2 = locationNode2.childNodes.first!
+            guard let node2 = locationNode2.childNodes.first else { return }
             
             // If the angle between two nodes and the user is less than a threshold and the vertical distance
             // between the node centers is less than deltaY trheshold a collision occured and move the node up
