@@ -19,6 +19,10 @@ extension SCNNode {
             geom.materials.forEach { $0.readsFromDepthBuffer = false }
         }
     }
+    
+    var height: Float {
+        return (self.boundingBox.max.y - self.boundingBox.min.y) * self.scale.y
+    }
 
     /// Returns a node similar to the one displayed when an `ARSCNView`'s `.debugOptions` includes `.showWorldOrigin`
     class func axesNode(quiverLength: CGFloat, quiverThickness: CGFloat) -> SCNNode {

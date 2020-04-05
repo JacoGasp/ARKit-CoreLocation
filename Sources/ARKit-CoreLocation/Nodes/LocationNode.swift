@@ -209,8 +209,8 @@ open class LocationNode: SCNNode {
             // Expand a little bit the angle to give space. Value in radians (0.1 rad ≈ 5°, thus 2.5° left and 2.5° right)
             let angleMin = angleSubtendedByNode + 0.1
             
-            let deltaY = abs(node1.worldPosition.y - node2.worldPosition.y)
-            let deltaYMin = 2 * node1.boundingBox.max.y * node1.scale.y
+            let deltaY = abs(node1.simdWorldPosition.y - node2.simdWorldPosition.y)
+            let deltaYMin = (node1.height + node2.height) * 0.5
              
             // The node is occluded, move it up by one node height + stackingOffset
             if deltaY < deltaYMin && angleBetweenNodes < angleMin {
