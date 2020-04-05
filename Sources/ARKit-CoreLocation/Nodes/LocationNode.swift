@@ -194,7 +194,7 @@ open class LocationNode: SCNNode {
     /// For the the given node, check if it is occluded by other nodes already present in the scene.
     /// A node is occluded when the angle on the XZ plane between the node and another one is less then angle on the XZ plane
     /// subtenend by the node itself, and their vertical heights on the Y axis intersects.
-    /// If the occlusion occurs, move the node one level up and check it anothoer node occluded it.
+    /// If the occlusion occurs, move the node one level up on the Y axis and check if another node occludes it.
     func stackNode(locationNodes: [LocationNode], stackingOffset: Float) {
         guard let node1 = self.childNodes.first else { return } // The current node to move
         
@@ -206,7 +206,7 @@ open class LocationNode: SCNNode {
             // The "angular length" subtended by node1.
             let angleSubtendedByNode = 2 * atan(node1.simdScale.x / simd_length(node1.simdWorldPosition))
             
-            // Expand a little bit the angle to give space. Value in radians (0.1 rad ≈ 5°, thus 2.5° left and 2.5° right)
+            // Expand a little bit the angle to give space. Value in radians (0.1 rad ≈ 6°, thus 3° left and 3° right)
             let angleMin = angleSubtendedByNode + 0.1
             
             let deltaY = abs(node1.simdWorldPosition.y - node2.simdWorldPosition.y)
